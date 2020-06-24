@@ -1,47 +1,92 @@
-const { Router } = require('express');
-const Estate = require('../models/Estate');
+const { Router } = require('express')
+const Estate = require('../models/Estate')
 
-const router = Router();
+const router = Router()
 
-// const responseFormat = (data, error = {}) => {
-//   return {
-//     res: {
-//       success: !Object.keys(error).length,
-//       data,
-//       error: {
-//         title: error.name,
-//         message: error.message
-//       }
-//     }
-//   }
-// }
+const responseFormat = (data, error) => {
+  if (!Array.isArray(data)) data = [data]
+  return {
+    res: {
+      success: !error,
+      data,
+      error: error && {
+        title: error.name,
+        message: error.message
+      }
+    }
+  }
+}
 
 router.get('/getall', async (req, res) => {
-  const estates = await Estate.find({});
-  return res.status(200).json({estates});
-});
+  await Estate.find({}, (err, estates) => {
+    if (err) {
+      res.send(responseFormat(null, err))
+    } else if (estates.length === 0) {
+      res.send(responseFormat(null, { name: 'There are no estates' }))
+    } else {
+      res.send(responseFormat(estates))
+    }
+  })
+})
 
 router.get('/getsingle/:id', async (req, res) => {
-  const { id } = req.params;
-  const estate = await Estate.findById({_id: id});
-  return res.status(200).json({estate});
-});
+  const { id } = req.params
+  await Estate.findById(id, (err, estate) => {
+    if (err) {
+      res.send(responseFormat(null, err))
+    } else {
+      res.send(responseFormat(estate))
+    }
+  })
+})
 
 router.post('/add', async (req, res) => {
-  const { title, type, address, rooms, price, area } = req.body;
-  const newEstate = new Estate({ title, type, address, rooms, price, area });
-  await newEstate.save();
-  return res.status(200).json({
-      response: "Estate added successfully"
-  });
-});
+  const { title, type, address, rooms, price, area } = req.body
+  const newEstate = new Estate({ title, type, address, rooms, price, area })
+  await newEstate.save((err, estate) => {
+    if (err) {
+      res.send(responseFormat(null, err))
+    } else {
+      res.send(responseFormat(estate))
+    }
+  })
+})
 
-router.delete('/delete/:id', (req, res) => {
-  res.end()
-});
+router.delete('/delete/:id', async (req, res) => {
+  const { id } = req.params
+  await Estate.findByIdAndDelete(id, (err, estate) => {
+    if (err) {
+      res.send(responseFormat(null, err))
+    } else {
+      res.send(responseFormat(estate))
+    }
+  })
+})
 
-router.put('/update/:id', (req, res) => {
-  res.end()
-});
+router.put('/update/:id', async (req, res) => {
+  const { id } = req.params
+  await Estate.findById(id, (err, estateToUpdate) => {
+    if (err) {
+      res.send(responseFormat(null, err))
+    } else {
+      const { title, type, address, rooms, price, area } = req.body
 
-module.exports = router;
+      if(title) estateToUpdate.title = title
+      if(type) estateToUpdate.type = type
+      if(address) estateToUpdate.address = address
+      if(rooms) estateToUpdate.rooms = rooms
+      if(price) estateToUpdate.price = price
+      if(area) estateToUpdate.area = area
+
+      estateToUpdate.save((err, estate) => {
+        if (err) {
+          res.send(responseFormat(null, err))
+        } else {
+          res.send(responseFormat(estate))
+        }
+      })
+    }
+  })
+})
+
+module.exports = router
