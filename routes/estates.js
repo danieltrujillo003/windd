@@ -4,7 +4,7 @@ const Estate = require('../models/Estate')
 const router = Router()
 
 const responseFormat = (data, error) => {
-  if (!Array.isArray(data)) data = [data]
+  // if (!Array.isArray(data)) data = [data]
   return {
     res: {
       success: !error,
@@ -34,6 +34,8 @@ router.get('/getsingle/:id', async (req, res) => {
   await Estate.findById(id, (err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))
+    } else if (!estate) {
+      res.send(responseFormat(null, { message: 'There isn\'t any estate that matches your query.' }))
     } else {
       res.send(responseFormat(estate))
     }
