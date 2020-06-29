@@ -19,10 +19,11 @@ app.use(cors())
 //   next();
 // });
 
-app.get('/', (req, res) => res.send({ message: 'This is the Windd API. Go to *** to log in.'})) // TODO: Add login endpoint
+app.get('/', (req, res) => res.send({ message: 'This is the Windd API. Go to /users/login to log in.'}))
 app.use('/estates', estatesRoutes)
 app.use('/users', usersRoutes)
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect(
   "mongodb://localhost:27017/windd",
   { useUnifiedTopology: true, useNewUrlParser: true },
