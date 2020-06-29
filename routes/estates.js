@@ -17,7 +17,7 @@ const responseFormat = (data, error) => {
   }
 }
 
-router.get('/getall', async (req, res) => {
+router.get('/get/all', async (req, res) => {
   await Estate.find({}, (err, estates) => {
     if (err) {
       res.send(responseFormat(null, err))
@@ -29,7 +29,20 @@ router.get('/getall', async (req, res) => {
   })
 })
 
-router.get('/getsingle/:id', async (req, res) => {
+router.get('/get/all/:email', async (req, res) => {
+  const { email } = req.params
+  await Estate.find({ owner: email }, (err, estates) => {
+    if (err) {
+      res.send(responseFormat(null, err))
+    } else if (estates.length === 0) {
+      res.send(responseFormat(null, { name: 'There are no estates' }))
+    } else {
+      res.send(responseFormat(estates))
+    }
+  })
+})
+
+router.get('/get/:id', async (req, res) => {
   const { id } = req.params
   await Estate.findById(id, (err, estate) => {
     if (err) {
@@ -43,8 +56,8 @@ router.get('/getsingle/:id', async (req, res) => {
 })
 
 router.post('/add', async (req, res) => {
-  const { title, type, address, rooms, price, area } = req.body
-  const newEstate = new Estate({ title, type, address, rooms, price, area })
+  const { title, type, address, rooms, price, area, owner } = req.body
+  const newEstate = new Estate({ title, type, address, rooms, price, area, owner })
   await newEstate.save((err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))

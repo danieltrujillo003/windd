@@ -11,7 +11,8 @@ const EstateSchema = new Schema({
   address: String,
   rooms: Number,
   price: Number,
-  area: String
+  area: String,
+  owner: String
 });
 
 module.exports = mongoose.model('Estate', EstateSchema);
