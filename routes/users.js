@@ -60,24 +60,13 @@ router.delete('/delete', async (req, res) => {
   })
 })
 
-router.put('/update/:id', async (req, res) => {
-  const { id } = req.params
-  await User.findById(id, (err, userToUpdate) => {
+router.put('/change', async (req, res) => {
+  const { email, password, newPassword } = req.body
+  await User.findOneAndUpdate({ email, password }, { password: newPassword }, (err, user) => {
     if (err) {
       res.send(responseFormat(null, err))
     } else {
-      const { user, password } = req.body
-
-      if(user) userToUpdate.user = user
-      if(password) userToUpdate.password = password
-
-      userToUpdate.save((err, user) => {
-        if (err) {
-          res.send(responseFormat(null, err))
-        } else {
-          res.send(responseFormat(user))
-        }
-      })
+      res.send(responseFormat({ message: 'Password successfully changed' }))
     }
   })
 })
