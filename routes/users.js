@@ -18,8 +18,8 @@ const responseFormat = (data, error) => {
 }
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body
-  const newUser = new User({ name, email, password })
+  const { email, password } = req.body
+  const newUser = new User({ email, password })
   await newUser.save((err, user) => {
     if (err) {
       res.send(responseFormat(null, err))
@@ -30,14 +30,14 @@ router.post('/register', async (req, res) => {
 })
 
 router.put('/login', async (req, res) => {
-  const { name, password } = req.body
-  await User.findOne({ name, password }, 'email log', (err, user) => {
+  const { email, password } = req.body
+  await User.findOne({ email, password }, 'email log', (err, user) => {
     if (err) {
       res.send(responseFormat(null, err))
     } else if (!user) {
-      res.send(responseFormat(null, { message: 'invalid password or username'}))
+      res.send(responseFormat(null, { message: 'invalid password or email'}))
     } else {
-      user.log.push({ isLogged: true, date: Date.now() })
+      user.log.push({ date: Date.now() })
       user.save((err, user) => {
         if (err) {
           res.send(responseFormat(null, err))
@@ -66,9 +66,8 @@ router.put('/update/:id', async (req, res) => {
     if (err) {
       res.send(responseFormat(null, err))
     } else {
-      const { name, user, password } = req.body
+      const { user, password } = req.body
 
-      if(name) userToUpdate.name = name
       if(user) userToUpdate.user = user
       if(password) userToUpdate.password = password
 
