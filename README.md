@@ -22,15 +22,18 @@ All set, enjoy.
 
 ### Estates
 
-- Read **(GET)**: `/estates/getall`
-- Read single **(GET)**: `/estates/getsingle/{id}`
-- Create **(POST)**: `/estates/appointment/add`
-- Update **(PUT)**: `/estates/appointment/update/{id}`
-- Delete **(DELETE)**: `/estates/appointment/delete/{id}`
+- Read **(GET)**: `/estates/get/all`
+  - Filter by price: `sort=asc||desc`
+- Read by email **(GET)**: `/estates/get/{email}`
+- Read by Id **(GET)**: `/estates/get/{id}`
+- Create **(POST)**: `/estates/add`
+- Update **(PUT)**: `/estates/update/{id}`
+- Delete **(DELETE)**: `/estates/delete/{id}`
 
 ### Users
 
-- Read single **(GET)**: `/users/getsingle/{id}`
-- Create **(POST)**: `/users/appointment/add`
-- Update **(PUT)**: `/users/appointment/update/{id}`
-- Delete **(DELETE)**: `/users/appointment/delete/{id}`
+- Register **(POST)**: `/users/register`
+- Read **(GET)**: `/users/{email}`
+- Login **(PUT)**: `/users/login`
+- Change password **(PUT)**: `/users/change`
+- Delete **(DELETE)**: `/users/delete`
