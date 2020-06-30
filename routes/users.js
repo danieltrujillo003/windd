@@ -76,6 +76,8 @@ router.get('/:email', async (req, res) => {
   await User.findOne({ email }, (err, user) => {
     if (err) {
       res.send(responseFormat(null, err))
+    } else if (!user) {
+      res.send(responseFormat(null, { message: 'No user found'}))
     } else {
       res.send(responseFormat(user))
     }

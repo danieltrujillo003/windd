@@ -80,26 +80,12 @@ router.delete('/delete/:id', async (req, res) => {
 
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params
-  await Estate.findById(id, (err, estateToUpdate) => {
+  const updatedData = req.body
+  await Estate.findByIdAndUpdate(id, updatedData, (err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))
     } else {
-      const { title, type, address, rooms, price, area } = req.body
-
-      if(title) estateToUpdate.title = title
-      if(type) estateToUpdate.type = type
-      if(address) estateToUpdate.address = address
-      if(rooms) estateToUpdate.rooms = rooms
-      if(price) estateToUpdate.price = price
-      if(area) estateToUpdate.area = area
-
-      estateToUpdate.save((err, estate) => {
-        if (err) {
-          res.send(responseFormat(null, err))
-        } else {
-          res.send(responseFormat(estate))
-        }
-      })
+      res.send(responseFormat(estate))
     }
   })
 })
