@@ -31,8 +31,6 @@ router.get('/get/all', async (req, res) => {
   await Estate.find({}, null, sortParam, (err, estates) => {
     if (err) {
       res.send(responseFormat(null, err))
-    } else if (estates.length === 0) {
-      res.send(responseFormat(null, { name: 'There are no estates' }))
     } else {
       res.send(responseFormat(estates))
     }
@@ -45,8 +43,6 @@ router.get('/get/all/:email', async (req, res) => {
   await Estate.find({ owner: email }, (err, estates) => {
     if (err) {
       res.send(responseFormat(null, err))
-    } else if (estates.length === 0) {
-      res.send(responseFormat(null, { name: 'There are no estates' }))
     } else {
       res.send(responseFormat(estates))
     }
