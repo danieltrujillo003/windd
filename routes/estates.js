@@ -18,7 +18,17 @@ const responseFormat = (data, error) => {
 }
 
 router.get('/get/all', async (req, res) => {
-  await Estate.find({}, (err, estates) => {
+  const { sort } = req.query
+  let sortParam
+  if (sort === 'asc') {
+    sortParam = { sort: { price: 1 } }
+  } else if (sort === 'desc') {
+    sortParam = { sort: { price: -1 } }
+  } else {
+    sortParam = null
+  }
+
+  await Estate.find({}, null, sortParam, (err, estates) => {
     if (err) {
       res.send(responseFormat(null, err))
     } else if (estates.length === 0) {
@@ -31,6 +41,7 @@ router.get('/get/all', async (req, res) => {
 
 router.get('/get/all/:email', async (req, res) => {
   const { email } = req.params
+
   await Estate.find({ owner: email }, (err, estates) => {
     if (err) {
       res.send(responseFormat(null, err))
@@ -44,6 +55,7 @@ router.get('/get/all/:email', async (req, res) => {
 
 router.get('/get/:id', async (req, res) => {
   const { id } = req.params
+
   await Estate.findById(id, (err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))
@@ -58,6 +70,7 @@ router.get('/get/:id', async (req, res) => {
 router.post('/add', async (req, res) => {
   const { title, type, address, rooms, price, area, owner } = req.body
   const newEstate = new Estate({ title, type, address, rooms, price, area, owner })
+
   await newEstate.save((err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))
@@ -69,6 +82,7 @@ router.post('/add', async (req, res) => {
 
 router.delete('/delete/:id', async (req, res) => {
   const { id } = req.params
+
   await Estate.findByIdAndDelete(id, (err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))
@@ -81,6 +95,7 @@ router.delete('/delete/:id', async (req, res) => {
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params
   const updatedData = req.body
+
   await Estate.findByIdAndUpdate(id, updatedData, (err, estate) => {
     if (err) {
       res.send(responseFormat(null, err))
