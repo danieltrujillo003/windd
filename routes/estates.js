@@ -88,7 +88,7 @@ router.delete('/delete/:id', async (req, res) => {
   })
 })
 
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => { // maybe need to use post
   const { id } = req.params
   const updatedData = req.body
 

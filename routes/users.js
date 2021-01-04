@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
   })
 })
 
-router.put('/login', async (req, res) => {
+router.put('/login', async (req, res) => { // maybe need to use post
   const { email, password } = req.body
   await User.findOne({ email, password }, 'email log', (err, user) => {
     if (err) {
